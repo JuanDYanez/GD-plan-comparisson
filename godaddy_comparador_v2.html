@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GoDaddy · Comparador de Planos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0e1118;
+  --surface:  #161c28;
+  --surface2: #1e2636;
+  --surface3: #243041;
+  --border:   #2a3550;
+  --border2:  #1f2b42;
+
+  --ink:      #dde5f0;
+  --ink2:     #a8bad4;
+  --muted:    #5e78a0;
+
+  --green:     #06c98a;
+  --green-dim: #042e20;
+  --green-mid: #064d36;
+  --green-text:#34e8a6;
+
+  --amber:     #f59e0b;
+  --amber-dim: #2a1d04;
+  --amber-text:#fcd34d;
+
+  --blue:      #3b82f6;
+  --blue-dim:  #0f1e40;
+  --blue-text: #93c5fd;
+
+  --navy:  #0a0e1a;
+
+  --c1:  #64748b;
+  --c12: #3b82f6;
+  --c24: #06c98a;
+  --c36: #f59e0b;
+
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.4);
+  --shadow:    0 4px 20px rgba(0,0,0,0.5);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,0.65);
+  --r:    16px;
+  --r-sm: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  background: var(--navy);
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid var(--border2);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.55);
+}
+
+.header-inner {
+  max-width: 1400px; margin: 0 auto; padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+}
+
+.logo { display: flex; align-items: center; gap: 14px; }
+
+.logo-mark {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #06c98a, #3b82f6);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-family: 'Fraunces', serif; font-weight: 900; font-size: 16px;
+  color: white; flex-shrink: 0;
+}
+
+.logo-text { font-family: 'Fraunces', serif; font-weight: 700; font-size: 17px; letter-spacing: -0.3px; color: var(--ink); }
+.logo-sub  { font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+
+.header-badge { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); font-weight: 500; }
+
+.pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+/* ── MAIN ── */
+.wrap { max-width: 1400px; margin: 0 auto; padding: 36px 32px 60px; }
+
+.label { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+/* ── CONFIG PANEL ── */
+.config-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 28px 32px; margin-bottom: 36px;
+  box-shadow: var(--shadow-sm);
+}
+
+.config-title {
+  font-family: 'Fraunces', serif; font-size: 20px; font-weight: 700;
+  color: var(--ink); margin-bottom: 24px; display: flex; align-items: center; gap: 10px;
+}
+.config-title span { font-size: 13px; font-family: 'Outfit', sans-serif; font-weight: 400; color: var(--muted); }
+
+.config-row { display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 32px; align-items: start; }
+
+.filter-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; display: block; }
+
+.pills-group { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.pill {
+  border: 1.5px solid var(--border); background: transparent; color: var(--ink2);
+  border-radius: 30px; padding: 7px 16px; font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s ease; line-height: 1;
+}
+.pill:hover { border-color: var(--ink2); background: var(--surface2); }
+
+.pill[data-plan="Titan"].active     { background: #1e3a5f; border-color: var(--blue);  color: var(--blue-text); }
+.pill[data-plan="Office 365"].active{ background: #063d28; border-color: var(--green); color: var(--green-text); }
+.pill[data-pkg].active              { background: var(--surface3); border-color: var(--ink2); color: var(--ink); }
+
+.pill[data-dur="1"].active  { background: #1e2535; border-color: var(--c1);  color: #94a3b8; }
+.pill[data-dur="12"].active { background: var(--blue-dim);  border-color: var(--c12); color: var(--blue-text); }
+.pill[data-dur="24"].active { background: var(--green-dim); border-color: var(--c24); color: var(--green-text); }
+.pill[data-dur="36"].active { background: var(--amber-dim); border-color: var(--c36); color: var(--amber-text); }
+
+.pills-actions { display: flex; gap: 8px; margin-top: 8px; }
+
+.micro-btn {
+  font-size: 11px; font-weight: 500; color: var(--muted);
+  background: none; border: none; cursor: pointer; padding: 0;
+  text-decoration: underline; text-underline-offset: 2px; font-family: 'Outfit', sans-serif;
+}
+.micro-btn:hover { color: var(--ink); }
+
+/* ── RESULTS HEADER ── */
+.results-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; gap: 16px; }
+
+.results-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 700; letter-spacing: -0.5px; color: var(--ink); }
+.results-count { font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+.sort-control { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+.sort-control select {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 6px 12px; font-size: 12px;
+  font-family: 'Outfit', sans-serif; color: var(--ink); cursor: pointer; outline: none;
+}
+
+/* ── CARDS GRID ── */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+/* ── PLAN CARD ── */
+.plan-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease; display: flex; flex-direction: column;
+  position: relative; animation: cardIn 0.3s ease both;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.plan-card:hover { box-shadow: var(--shadow-lg); border-color: var(--border2); transform: translateY(-3px); }
+
+/* Top stripe */
+.card-stripe { height: 5px; width: 100%; flex-shrink: 0; }
+.dur-1  .card-stripe { background: var(--c1); }
+.dur-12 .card-stripe { background: var(--c12); }
+.dur-24 .card-stripe { background: var(--c24); }
+.dur-36 .card-stripe { background: linear-gradient(90deg, #f59e0b, #fcd34d); }
+
+/* Corner best-value badge (top-right) */
+.card-corner-badge {
+  position: absolute; top: 18px; right: 16px;
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; line-height: 1.4;
+  background: var(--amber-dim); color: var(--amber-text); border: 1px solid #5a3d00;
+}
+
+/* Card body */
+.card-body { padding: 20px 22px 0; flex: 1; }
+
+/* Plan label badge — top-left, above package name */
+.card-plan-badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; line-height: 1.4;
+  margin-bottom: 8px;
+}
+.badge-titan  { background: #1e3a5f; color: var(--blue-text);  border: 1px solid #2a5080; }
+.badge-office { background: #063d28; color: var(--green-text); border: 1px solid #0a6040; }
+
+.card-pkg-name {
+  font-family: 'Fraunces', serif; font-size: 21px; font-weight: 700;
+  color: var(--ink); letter-spacing: -0.3px; margin-bottom: 4px; line-height: 1.2;
+}
+
+.card-dur-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 20px; }
+
+.dur-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dur-1  .dur-dot { background: var(--c1); }
+.dur-12 .dur-dot { background: var(--c12); }
+.dur-24 .dur-dot { background: var(--c24); }
+.dur-36 .dur-dot { background: var(--c36); }
+
+/* Price block */
+.price-block {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--r-sm); padding: 16px 18px; margin-bottom: 16px; position: relative;
+}
+
+.price-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+
+.price-main { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 900; color: var(--ink); letter-spacing: -1.5px; line-height: 1; }
+.price-main sup { font-size: 14px; font-weight: 600; vertical-align: top; margin-top: 10px; display: inline-block; letter-spacing: 0; }
+.price-main sub { font-size: 14px; font-weight: 400; font-family: 'Outfit', sans-serif; color: var(--muted); vertical-align: baseline; letter-spacing: 0; }
+
+/* Two-line price note */
+.price-note { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; }
+
+.price-note-with-discount {
+  font-size: 13px; font-weight: 700;
+  color: var(--green-text);
+}
+
+.price-note-base { font-size: 12px; color: var(--muted); }
+.price-note-base s { color: #2d3f58; }
+
+.discount-pill {
+  position: absolute; top: 14px; right: 14px;
+  background: var(--green-dim); color: var(--green-text); border: 1px solid var(--green-mid);
+  font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 20px;
+}
+
+/* Metrics */
+.metrics { display: flex; flex-direction: column; gap: 0; margin-bottom: 16px; }
+
+.metric-row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 10px 0; border-bottom: 1px solid var(--border2); }
+.metric-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.metric-key { color: var(--muted); font-weight: 400; }
+.metric-val { font-weight: 600; color: var(--ink); text-align: right; }
+.metric-val.amber { color: var(--amber-text); }
+.metric-val.muted { color: var(--muted); font-weight: 400; }
+
+/* Savings section */
+.savings-section {
+  background: var(--green-dim); border: 1px solid var(--green-mid);
+  border-radius: var(--r-sm); padding: 14px 16px; margin-bottom: 16px;
+}
+
+.savings-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+.savings-label { font-size: 12px; color: var(--green-text); font-weight: 500; line-height: 1.3; }
+.savings-label strong { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; opacity: 0.6; }
+
+.savings-amount { font-family: 'Fraunces', serif; font-size: 24px; font-weight: 900; color: var(--green-text); letter-spacing: -0.5px; flex-shrink: 0; }
+
+/* Savings calculation — vertical rows */
+.savings-calc {
+  display: flex; flex-direction: column; gap: 0;
+  width: 100%; margin-top: 12px; padding-top: 12px;
+  border-top: 1px solid var(--green-mid);
+}
+
+.calc-row {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 8px; padding: 4px 0;
+}
+
+.calc-row.result-row {
+  border-top: 1px solid var(--green-mid);
+  margin-top: 5px; padding-top: 8px;
+}
+
+.calc-left { display: flex; align-items: center; gap: 6px; min-width: 0; }
+
+.calc-operator { flex-shrink: 0; font-family: 'Fraunces', serif; font-size: 14px; font-weight: 700; color: var(--green); width: 14px; text-align: center; }
+
+.calc-desc { font-size: 11px; color: #4a9e7a; line-height: 1.2; white-space: nowrap; }
+
+.calc-amount { font-family: 'Fraunces', serif; font-size: 12px; font-weight: 700; color: var(--green-text); white-space: nowrap; flex-shrink: 0; }
+.calc-amount.result { font-size: 14px; color: var(--green); }
+
+/* Monthly no-savings note */
+.no-savings {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--r-sm); padding: 12px 14px; margin-bottom: 16px;
+  font-size: 12px; color: var(--muted); line-height: 1.5;
+}
+
+/* Pitch section */
+.pitch-section { background: var(--navy); padding: 16px 22px; margin-top: auto; }
+
+.pitch-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+
+.pitch-points { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+
+.pitch-point { font-size: 12.5px; color: rgba(220,230,245,0.85); display: flex; align-items: flex-start; gap: 8px; line-height: 1.4; }
+.pitch-point::before { content: '→'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+/* Empty state */
+.empty {
+  grid-column: 1/-1; text-align: center; padding: 80px 40px;
+  background: var(--surface); border-radius: var(--r); border: 1.5px dashed var(--border);
+}
+.empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-title { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.empty-sub { font-size: 14px; color: var(--muted); }
+
+/* Best-value glow */
+.plan-card.is-best { border-color: #5a3d00; box-shadow: 0 0 0 3px rgba(245,158,11,0.14), var(--shadow); }
+
+/* Responsive */
+@media (max-width: 1000px) { .config-row { grid-template-columns: 1fr 1fr; gap: 20px; } }
+@media (max-width: 700px) {
+  .config-row { grid-template-columns: 1fr; }
+  .wrap { padding: 24px 16px 48px; }
+  .header-inner { padding: 14px 20px; }
+  .config-panel { padding: 20px; }
+  .cards-grid { grid-template-columns: 1fr; }
+  .results-header { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">GD</div>
+      <div>
+        <div class="logo-text">Comparador de Planos</div>
+        <div class="logo-sub">Ferramenta de vendas · GoDaddy Colômbia</div>
+      </div>
+    </div>
+    <div class="header-badge">
+      <div class="pulse"></div>
+      <span id="activeCount">28 planos disponíveis</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="label">Configuração da comparação</div>
+  <div class="config-panel">
+    <div class="config-title">
+      Selecione o que deseja comparar
+      <span>— Você pode selecionar múltiplas opções em cada grupo</span>
+    </div>
+    <div class="config-row">
+
+      <div class="filter-group">
+        <span class="filter-label">Plano</span>
+        <div class="pills-group" id="planPills">
+          <button class="pill" data-plan="Titan"     onclick="toggle('plan','Titan',this)">Titan</button>
+          <button class="pill" data-plan="Office 365" onclick="toggle('plan','Office 365',this)">Office 365</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Pacote</span>
+        <div class="pills-group" id="pkgPills"></div>
+        <div class="pills-actions">
+          <button class="micro-btn" onclick="selectAll('pkg')">Selecionar todos</button>
+          <button class="micro-btn" onclick="clearAll('pkg')">Limpar</button>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Duração</span>
+        <div class="pills-group" id="durPills">
+          <button class="pill" data-dur="1"  onclick="toggle('dur',1,this)">Mensal</button>
+          <button class="pill" data-dur="12" onclick="toggle('dur',12,this)">12 meses</button>
+          <button class="pill" data-dur="24" onclick="toggle('dur',24,this)">24 meses</button>
+          <button class="pill" data-dur="36" onclick="toggle('dur',36,this)">36 meses</button>
+        </div>
+        <div class="pills-actions">
+          <button class="micro-btn" onclick="selectAll('dur')">Selecionar todos</button>
+          <button class="micro-btn" onclick="clearAll('dur')">Limpar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="results-header">
+    <div>
+      <div class="results-title">Comparação de planos</div>
+      <div class="results-count" id="resultsCount">—</div>
+    </div>
+    <div class="sort-control">
+      <span>Ordenar por</span>
+      <select id="sortSelect" onchange="renderCards()">
+        <option value="default">Plano / Pacote</option>
+        <option value="price_asc">Preço/mês ↑</option>
+        <option value="price_desc">Preço/mês ↓</option>
+        <option value="saving_desc">Maior economia</option>
+        <option value="discount_desc">Maior desconto</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="cards-grid" id="cardsGrid"></div>
+</div>
+
+<script>
+const DATA = {"planes":[{"nombre":"Titan","paquetes":[{"nombre":"Pro Light","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":24.99,"valor_final":24.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":24.99},{"tiempo_meses":12,"descuento":0.35,"valor":119.88,"valor_final":77.88,"valor_por_mes":6.49,"total_si_paga_mensual":299.88,"ahorro":222.0,"valor_renovacion":119.88},{"tiempo_meses":24,"descuento":0.40,"valor":239.76,"valor_final":143.76,"valor_por_mes":5.99,"total_si_paga_mensual":599.76,"ahorro":456.0,"valor_renovacion":239.76},{"tiempo_meses":36,"descuento":0.50,"valor":359.64,"valor_final":179.64,"valor_por_mes":4.99,"total_si_paga_mensual":899.64,"ahorro":720.0,"valor_renovacion":359.64}]},{"nombre":"Pro Plus","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":39.99,"valor_final":39.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":39.99},{"tiempo_meses":12,"descuento":0.35,"valor":203.88,"valor_final":131.88,"valor_por_mes":10.99,"total_si_paga_mensual":479.88,"ahorro":348.0,"valor_renovacion":203.88},{"tiempo_meses":24,"descuento":0.35,"valor":407.76,"valor_final":263.76,"valor_por_mes":10.99,"total_si_paga_mensual":959.76,"ahorro":696.0,"valor_renovacion":407.76},{"tiempo_meses":36,"descuento":0.41,"valor":611.64,"valor_final":359.64,"valor_por_mes":9.99,"total_si_paga_mensual":1439.64,"ahorro":1080.0,"valor_renovacion":611.64}]},{"nombre":"Premium","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":54.99,"valor_final":54.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":54.99},{"tiempo_meses":12,"descuento":0.32,"valor":335.88,"valor_final":227.88,"valor_por_mes":18.99,"total_si_paga_mensual":659.88,"ahorro":432.0,"valor_renovacion":335.88},{"tiempo_meses":24,"descuento":0.32,"valor":671.76,"valor_final":455.76,"valor_por_mes":18.99,"total_si_paga_mensual":1319.76,"ahorro":864.0,"valor_renovacion":671.76},{"tiempo_meses":36,"descuento":0.32,"valor":1007.64,"valor_final":683.64,"valor_por_mes":18.99,"total_si_paga_mensual":1979.64,"ahorro":1296.0,"valor_renovacion":1007.64}]},{"nombre":"Ultra","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":69.99,"valor_final":69.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":69.99},{"tiempo_meses":12,"descuento":0.34,"valor":515.88,"valor_final":335.88,"valor_por_mes":27.99,"total_si_paga_mensual":839.88,"ahorro":504.0,"valor_renovacion":515.88},{"tiempo_meses":24,"descuento":0.34,"valor":1031.76,"valor_final":671.76,"valor_por_mes":27.99,"total_si_paga_mensual":1679.76,"ahorro":1008.0,"valor_renovacion":1031.76},{"tiempo_meses":36,"descuento":0.34,"valor":1547.64,"valor_final":1007.64,"valor_por_mes":27.99,"total_si_paga_mensual":2519.64,"ahorro":1512.0,"valor_renovacion":1547.64}]}]},{"nombre":"Office 365","paquetes":[{"nombre":"Email Essentials","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":59.99,"valor_final":59.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":59.99},{"tiempo_meses":12,"descuento":0.71,"valor":419.88,"valor_final":119.88,"valor_por_mes":9.99,"total_si_paga_mensual":719.88,"ahorro":600.0,"valor_renovacion":419.88},{"tiempo_meses":24,"descuento":0.55,"valor":839.76,"valor_final":371.76,"valor_por_mes":15.49,"total_si_paga_mensual":1439.76,"ahorro":1068.0,"valor_renovacion":839.76},{"tiempo_meses":36,"descuento":0.50,"valor":1259.64,"valor_final":626.04,"valor_por_mes":17.39,"total_si_paga_mensual":2159.64,"ahorro":1533.6,"valor_renovacion":1259.64}]},{"nombre":"Online Business Essentials","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":89.99,"valor_final":89.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":89.99},{"tiempo_meses":12,"descuento":0.27,"valor":659.88,"valor_final":479.88,"valor_por_mes":39.99,"total_si_paga_mensual":1079.88,"ahorro":600.0,"valor_renovacion":659.88},{"tiempo_meses":24,"descuento":0.28,"valor":1319.76,"valor_final":940.56,"valor_por_mes":39.19,"total_si_paga_mensual":2159.76,"ahorro":1219.2,"valor_renovacion":1319.76},{"tiempo_meses":36,"descuento":0.29,"valor":1979.64,"valor_final":1403.64,"valor_por_mes":38.99,"total_si_paga_mensual":3239.64,"ahorro":1836.0,"valor_renovacion":1979.64}]},{"nombre":"Business Professional","duraciones":[{"tiempo_meses":1,"descuento":0.0,"valor":119.99,"valor_final":119.99,"valor_por_mes":null,"total_si_paga_mensual":null,"ahorro":null,"valor_renovacion":119.99},{"tiempo_meses":12,"descuento":0.40,"valor":899.88,"valor_final":537.25,"valor_por_mes":44.77,"total_si_paga_mensual":1439.88,"ahorro":902.63,"valor_renovacion":899.88},{"tiempo_meses":24,"descuento":0.21,"valor":1799.76,"valor_final":1409.16,"valor_por_mes":58.72,"total_si_paga_mensual":2879.76,"ahorro":1470.6,"valor_renovacion":1799.76},{"tiempo_meses":36,"descuento":0.17,"valor":2699.64,"valor_final":2221.31,"valor_por_mes":61.70,"total_si_paga_mensual":4319.64,"ahorro":2098.33,"valor_renovacion":2699.64}]}]}]};
+
+let activePlans = new Set();
+let activePkgs  = new Set();
+let activeDurs  = new Set();
+
+function allPackages() {
+  const pkgs = [];
+  for (const plan of DATA.planes)
+    for (const pkg of plan.paquetes)
+      if (!pkgs.find(p => p.nombre === pkg.nombre && p.plan === plan.nombre))
+        pkgs.push({ nombre: pkg.nombre, plan: plan.nombre });
+  return pkgs;
+}
+
+function buildPkgPills() {
+  const container = document.getElementById('pkgPills');
+  const packages = allPackages();
+  activePkgs = new Set(); // start empty
+  container.innerHTML = packages.map(p =>
+    `<button class="pill" data-pkg="${p.nombre}" data-plan="${p.plan}"
+      onclick="toggle('pkg','${p.nombre}',this)" title="${p.plan}">${p.nombre}</button>`
+  ).join('');
+}
+
+function toggle(type, val, btn) {
+  const set = type === 'plan' ? activePlans : type === 'pkg' ? activePkgs : activeDurs;
+  const key = type === 'dur' ? Number(val) : val;
+  if (set.has(key)) { set.delete(key); btn.classList.remove('active'); }
+  else              { set.add(key);    btn.classList.add('active'); }
+  syncPkgVisibility();
+  renderCards();
+}
+
+function syncPkgVisibility() {
+  document.querySelectorAll('#pkgPills .pill').forEach(btn => {
+    const on = activePlans.has(btn.dataset.plan);
+    btn.style.opacity = on ? '1' : '0.3';
+    btn.style.pointerEvents = on ? '' : 'none';
+  });
+}
+
+function selectAll(type) {
+  if (type === 'dur') {
+    activeDurs = new Set([1,12,24,36]);
+    document.querySelectorAll('#durPills .pill').forEach(b => b.classList.add('active'));
+  } else {
+    document.querySelectorAll('#pkgPills .pill').forEach(b => {
+      if (activePlans.has(b.dataset.plan)) { activePkgs.add(b.dataset.pkg); b.classList.add('active'); }
+    });
+  }
+  renderCards();
+}
+
+function clearAll(type) {
+  if (type === 'dur') {
+    activeDurs = new Set([1]);
+    document.querySelectorAll('#durPills .pill').forEach(b =>
+      Number(b.dataset.dur) === 1 ? b.classList.add('active') : b.classList.remove('active'));
+  } else {
+    let first = true; activePkgs.clear();
+    document.querySelectorAll('#pkgPills .pill').forEach(b => {
+      if (!activePlans.has(b.dataset.plan)) return;
+      if (first) { activePkgs.add(b.dataset.pkg); b.classList.add('active'); first = false; }
+      else b.classList.remove('active');
+    });
+  }
+  renderCards();
+}
+
+function fmt(n) {
+  if (n == null || isNaN(n)) return '—';
+  return 'R$\u00a0' + n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+function pct(n) { return Math.round(n * 100) + '%'; }
+function durLabel(m) {
+  return m === 1 ? 'Pagamento mensal' : m === 12 ? '12 meses' : m === 24 ? '24 meses' : '36 meses';
+}
+
+function getRows() {
+  const rows = [];
+  for (const plan of DATA.planes) {
+    if (!activePlans.has(plan.nombre)) continue;
+    for (const pkg of plan.paquetes) {
+      if (!activePkgs.has(pkg.nombre)) continue;
+      for (const d of pkg.duraciones) {
+        if (!activeDurs.has(d.tiempo_meses)) continue;
+        rows.push({ plan: plan.nombre, paquete: pkg.nombre, ...d });
+      }
+    }
+  }
+  return rows;
+}
+
+function pitchPoints(row, isBest, pkgDurations) {
+  const pts = [];
+  const prevDurMap = { 12: 1, 24: 12, 36: 24 };
+
+  if (row.tiempo_meses === 1) {
+    pts.push('Zero compromisso — ative e cancele quando quiser.');
+    pts.push('Ideal para testar o serviço antes de se comprometer com um plano anual.');
+    const annual = pkgDurations && pkgDurations[12];
+    if (annual && annual.ahorro)
+      pts.push(`Migrando para o plano de 12 meses você economizaria ${fmt(annual.ahorro)} no mesmo período.`);
+  } else {
+    const prevMeses = prevDurMap[row.tiempo_meses];
+    const prevDur   = pkgDurations && pkgDurations[prevMeses];
+
+    if (row.tiempo_meses === 12 && prevDur) {
+      const monthlyTotal = prevDur.valor_renovacion * 12;
+      const saving = monthlyTotal - row.valor_final;
+      pts.push(
+        `Contratar 12 meses por ${fmt(row.valor_final)} vs. renovar mensalmente: ` +
+        `${fmt(prevDur.valor_renovacion)}/mês × 12 = ${fmt(monthlyTotal)}. ` +
+        `Economia: ${fmt(saving)}.`
+      );
+    } else if (prevDur) {
+      const renovPrev = prevDur.valor_renovacion;
+      const diff = renovPrev - row.valor_final;
+      if (diff > 0) {
+        pts.push(
+          `Contratar ${row.tiempo_meses} meses por ${fmt(row.valor_final)} vs. renovar ` +
+          `${prevMeses} meses sem desconto: ${fmt(renovPrev)}. ` +
+          `Você economiza ${fmt(diff)} e ganha ${row.tiempo_meses - prevMeses} meses adicionais.`
+        );
+      } else {
+        const mult = row.tiempo_meses / prevMeses;
+        const renewTotal = renovPrev * mult;
+        const totalSaving = renewTotal - row.valor_final;
+        pts.push(
+          `Contratar ${row.tiempo_meses} meses por ${fmt(row.valor_final)} vs. renovar ` +
+          `${prevMeses} meses (sem desconto) ${mult}×: ${fmt(renovPrev)} × ${mult} = ${fmt(renewTotal)}. ` +
+          `Economia real: ${fmt(totalSaving)}.`
+        );
+      }
+    }
+
+    if (row.descuento > 0)
+      pts.push(`${pct(row.descuento)} de desconto sobre o preço base (${fmt(row.valor)}) — já aplicado no valor final.`);
+    if (isBest)
+      pts.push(`✦ Melhor relação custo-benefício de toda a comparação atual.`);
+  }
+  return pts.slice(0, 3);
+}
+
+function sortRows(rows) {
+  const v = document.getElementById('sortSelect').value;
+  if (v === 'price_asc')     return [...rows].sort((a,b) => (a.valor_por_mes ?? a.valor_final) - (b.valor_por_mes ?? b.valor_final));
+  if (v === 'price_desc')    return [...rows].sort((a,b) => (b.valor_por_mes ?? b.valor_final) - (a.valor_por_mes ?? a.valor_final));
+  if (v === 'saving_desc')   return [...rows].sort((a,b) => (b.ahorro ?? 0) - (a.ahorro ?? 0));
+  if (v === 'discount_desc') return [...rows].sort((a,b) => b.descuento - a.descuento);
+  return rows;
+}
+
+function renderCards() {
+  const rows = sortRows(getRows());
+  const grid = document.getElementById('cardsGrid');
+  const count = rows.length;
+
+  document.getElementById('resultsCount').textContent =
+    count === 0 ? 'Sem resultados' : count === 1 ? '1 plano selecionado' : `${count} planos comparados`;
+  document.getElementById('activeCount').textContent = count === 0 ? 'Nenhum plano selecionado' : `${count} planos ativos`;
+
+  if (!count) {
+    const noFilters = activePlans.size === 0 || activeDurs.size === 0 || activePkgs.size === 0;
+    grid.innerHTML = `<div class="empty">
+      <div class="empty-icon">${noFilters ? '👆' : '🔍'}</div>
+      <div class="empty-title">${noFilters ? 'Selecione as opções acima para começar' : 'Sem resultados'}</div>
+      <div class="empty-sub">${noFilters ? 'Escolha pelo menos um plano, um pacote e uma duração para visualizar a comparação.' : 'Ative ao menos um plano, pacote e duração para ver a comparação.'}</div>
+    </div>`;
+    return;
+  }
+
+  // Full durations map from DATA (all durations, not just filtered)
+  const allDurs = {};
+  for (const plan of DATA.planes)
+    for (const pkg of plan.paquetes) {
+      const key = `${plan.nombre}|${pkg.nombre}`;
+      allDurs[key] = {};
+      for (const d of pkg.duraciones) allDurs[key][d.tiempo_meses] = d;
+    }
+
+  const annualRows = rows.filter(r => r.ahorro != null);
+  const bestRow = annualRows.length ? annualRows.reduce((a,b) => b.ahorro > a.ahorro ? b : a) : null;
+
+  const savingsByPkg = {};
+  annualRows.forEach(r => {
+    const k = `${r.plan}|${r.paquete}`;
+    if (!savingsByPkg[k] || r.ahorro > savingsByPkg[k].ahorro) savingsByPkg[k] = r;
+  });
+
+  grid.innerHTML = rows.map((row, i) => {
+    const isBest    = bestRow && row.plan === bestRow.plan && row.paquete === bestRow.paquete && row.tiempo_meses === bestRow.tiempo_meses;
+    const isMonthly = row.tiempo_meses === 1;
+    const durClass  = `dur-${row.tiempo_meses}`;
+    const planSlug  = row.plan === 'Titan' ? 'titan' : 'office';
+    const pkgDurs   = allDurs[`${row.plan}|${row.paquete}`] || {};
+    const pts       = pitchPoints(row, isBest, pkgDurs);
+    const pkgKey    = `${row.plan}|${row.paquete}`;
+
+    const discountHtml = row.descuento > 0 ? `<div class="discount-pill">−${pct(row.descuento)}</div>` : '';
+
+    const priceVal = row.valor_por_mes != null ? row.valor_por_mes : row.valor_final;
+
+    const priceNoteHtml = row.valor_por_mes != null
+      ? `<div class="price-note">
+          <span class="price-note-with-discount">Total com desconto: ${fmt(row.valor_final)}</span>
+          <span class="price-note-base">Total sem desconto: <s>${fmt(row.valor)}</s></span>
+        </div>`
+      : `<div class="price-note"><span class="price-note-base">Preço mensal sem compromisso</span></div>`;
+
+    const savingsHtml = !isMonthly && row.ahorro
+      ? `<div class="savings-section">
+          <div class="savings-top">
+            <div class="savings-label"><strong>Economia total</strong>vs. pagamento mensal</div>
+            <div class="savings-amount">${fmt(row.ahorro)}</div>
+          </div>
+          <div class="savings-calc">
+            <div class="calc-row">
+              <div class="calc-left">
+                <span class="calc-operator"> </span>
+                <span class="calc-desc">Pagando mês a mês</span>
+              </div>
+              <span class="calc-amount">${fmt(row.total_si_paga_mensual)}</span>
+            </div>
+            <div class="calc-row">
+              <div class="calc-left">
+                <span class="calc-operator">−</span>
+                <span class="calc-desc">Preço do plano</span>
+              </div>
+              <span class="calc-amount">${fmt(row.valor_final)}</span>
+            </div>
+            <div class="calc-row result-row">
+              <div class="calc-left">
+                <span class="calc-operator">=</span>
+                <span class="calc-desc">Economia total</span>
+              </div>
+              <span class="calc-amount result">${fmt(row.ahorro)}</span>
+            </div>
+          </div>
+        </div>`
+      : `<div class="no-savings">Sem desconto · Preço flexível mês a mês${savingsByPkg[pkgKey] ? ` · Economize ${fmt(savingsByPkg[pkgKey].ahorro)} escolhendo um plano anual` : ''}</div>`;
+
+    const metricsHtml = !isMonthly
+      ? `<div class="metrics">
+          <div class="metric-row">
+            <span class="metric-key">Total pagando mensalmente</span>
+            <span class="metric-val">${fmt(row.total_si_paga_mensual)}</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-key">Preço de renovação</span>
+            <span class="metric-val amber">${fmt(row.valor_renovacion)}</span>
+          </div>
+        </div>`
+      : `<div class="metrics">
+          <div class="metric-row">
+            <span class="metric-key">Preço de renovação</span>
+            <span class="metric-val">${fmt(row.valor_renovacion)}</span>
+          </div>
+        </div>`;
+
+    return `
+    <div class="plan-card ${durClass} ${isBest ? 'is-best' : ''} animate-in" style="animation-delay:${i * 0.04}s">
+      <div class="card-stripe"></div>
+      ${isBest ? '<div class="card-corner-badge">★ Melhor valor</div>' : ''}
+      <div class="card-body">
+        <span class="card-plan-badge badge-${planSlug}">${row.plan}</span>
+        <div class="card-pkg-name">${row.paquete}</div>
+        <div class="card-dur-tag">
+          <div class="dur-dot"></div>
+          ${durLabel(row.tiempo_meses)}
+        </div>
+        <div class="price-block">
+          <div class="price-label">${isMonthly ? 'Preço mensal' : 'Preço por mês'}</div>
+          <div class="price-main"><sup>R$</sup>${priceVal.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}<sub>/mês</sub></div>
+          ${priceNoteHtml}
+          ${discountHtml}
+        </div>
+        ${savingsHtml}
+        ${metricsHtml}
+      </div>
+      <div class="pitch-section">
+        <div class="pitch-label">Argumentos de venda</div>
+        <ul class="pitch-points">
+          ${pts.map(p => `<li class="pitch-point">${p}</li>`).join('')}
+        </ul>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+buildPkgPills();
+renderCards();
+</script>
+</body>
+</html>
